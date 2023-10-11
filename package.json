@@ -1,0 +1,23 @@
+{
+  "name": "frontend-project-46",
+  "version": "1.0.0",
+  "description": "Hexlet, second Project: Difference Generator",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "gendiff": "gendiff.js"
+  },
+  "keywords": [
+    "study",
+    "recursion",
+    "diff"
+  ],
+  "author": "Igor Shipilov",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.0.0"
+  }
+}
