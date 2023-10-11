@@ -1,2 +1,2 @@
--r node_modules/
--r _sandbox/
+/node_modules/
+/_sandbox/
