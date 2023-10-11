@@ -34,14 +34,15 @@ const getFilePath = (fileName) => {
   const currentDirectory = process.cwd();
   const filePath = path.resolve(currentDirectory, fileName);
 
+  // console.log(filePath);
   return filePath;
 };
 
 const getFileContent = (file) => fs.readFileSync(getFilePath(file), 'utf-8');
 
 
-
-program
+const genDiff = () => {
+  program
   .name('gendiff')
   .version('0.0.1')
   .description('Compares two configuration files and shows a difference.')
@@ -50,5 +51,18 @@ program
   .action(getFilePath)
 
 program.parse();
+}
 
+genDiff();
 
+// program
+//   .name('gendiff')
+//   .version('0.0.1')
+//   .description('Compares two configuration files and shows a difference.')
+//   .option('-f, --format <type>', 'output format')
+//   .arguments('<filepath1> <filepath2>')
+//   .action(getFilePath)
+
+// program.parse();
+
+export default genDiff;
