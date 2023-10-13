@@ -1,7 +1,7 @@
 import path from 'path';
 // import { cwd } from 'node:process'; // почему-то `process.cwd` работает без импорта `cwd`
 import fs from 'fs';
-import { getParsedFile } from "../parse.js";
+import { getParsedFile } from "./parse.js";
 import _ from 'lodash';
 
 
@@ -38,6 +38,7 @@ const genDiff = (file1, file2) => {
   const indent = ' ';
   const indentCount = 2;
   const currentIndent = indent.repeat(indentCount);
+  const br = '\n';
 
   // Итерируем массив ключей, проверяя наличие каждого ключа в переданных объектах и формируя diff строку
   const lines = keys
@@ -52,7 +53,7 @@ const genDiff = (file1, file2) => {
           return `${currentIndent}+ ${key}: ${obj2[key]}`;
 
         } else if (obj1[key] !== obj2[key]) {
-          return `${currentIndent}- ${key}: ${obj1[key]}\n${currentIndent}+ ${key}: ${obj2[key]}`;
+          return `${currentIndent}- ${key}: ${obj1[key]}${br}${currentIndent}+ ${key}: ${obj2[key]}`;
 
         } else if (obj1[key] === obj2[key]) {
           return `${currentIndent}${currentIndent}${key}: ${obj1[key]}`;
@@ -63,7 +64,7 @@ const genDiff = (file1, file2) => {
   return ['{',
     ...lines,
     '}'
-  ].join('\n');
+  ].join(`${br}`);
 };
 
 // console.log(genDiff('file1.json', 'file2.json'))

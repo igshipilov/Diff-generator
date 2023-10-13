@@ -1,4 +1,4 @@
-import { getFileContent } from "./src/index.js";
+import { getFileContent } from "./index.js";
 
 const getParsedFile = (file) => JSON.parse(getFileContent(file));
 
