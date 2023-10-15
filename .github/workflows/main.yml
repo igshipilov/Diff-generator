@@ -1,5 +1,6 @@
 name: Tests and Linter v02
-on: push
+on:
+  - push
 jobs:
   build:
     runs-on: ubunty-latest
