@@ -1,4 +1,4 @@
-name: Tests and Linter
+name: Tests and Linter v02
 on: push
 jobs:
   build:
