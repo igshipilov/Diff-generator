@@ -1,0 +1,22 @@
+name: Tests and Linter
+on: push
+jobs:
+  build:
+    runs-on: ubunty-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+      - run: make lint
+      - run: make test
+      - name: Test & publish code coverage
+        # Publish code coverage on Code Climate
+        # https://github.com/paambaati/codeclimate-action
+        uses: paambaati/codeclimate-action@v4.0.0
+        # Add Code Climate secret key
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TESTS_COVERAGE }}
+        with:
+          coverageCommand: make test-coverage
+          debug: true
