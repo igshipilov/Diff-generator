@@ -9,6 +9,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: 'npm'
+      - run: make install
       - run: make lint
       - run: make test
       - name: Test & publish code coverage

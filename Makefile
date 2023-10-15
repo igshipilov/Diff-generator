@@ -1,5 +1,5 @@
-publish:
-	npm publish --dry-run
+install:
+	npm ci
 
 test:
 	npm test
@@ -12,3 +12,6 @@ lint:
 
 lint-fix:
 	npx eslint --fix .
+
+publish:
+	npm publish --dry-run
