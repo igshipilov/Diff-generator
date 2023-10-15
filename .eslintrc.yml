@@ -1,9 +1,21 @@
+plugins:
+  - jest
+
+# https://eslint.org/docs/user-guide/configuring#specifying-environments
 env:
-  browser: true
-  es2021: true
-extends: airbnb-base
+  node: true
+
+extends:
+  - 'airbnb-base'
+  - 'plugin:jest/recommended'
+
 parserOptions:
-  ecmaVersion: 2020
-  sourceType: module
-rules: 
-  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }] # разрешает подчёркивание в именах только для двух констант
+  ecmaVersion: latest
+
+rules:
+  no-console: 0
+  import/extensions: # FIXME: remove when rule will be adjusted for new nodejs version
+    - error
+    - ignorePackages
+    - js: always
+  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]

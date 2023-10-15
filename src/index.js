@@ -1,9 +1,8 @@
 import path from 'path';
 // import { cwd } from 'node:process'; // почему-то `process.cwd` работает без импорта `cwd`
 import fs from 'fs';
-import { getParsedFile } from "./parse.js";
 import _ from 'lodash';
-
+import { getParsedFile } from './parse.js';
 
 // Получить путь для одного файла
 const getFilePath = (fileName) => {
@@ -14,11 +13,9 @@ const getFilePath = (fileName) => {
   return filePath;
 };
 
-console.log(getFilePath('file1.json'))
-
+console.log(getFilePath('file1.json'));
 
 const getFileContent = (file) => fs.readFileSync(getFilePath(file), 'utf-8');
-
 
 const genDiff = (file1, file2) => {
   const obj1 = _.cloneDeep(getParsedFile(file1));
@@ -40,30 +37,26 @@ const genDiff = (file1, file2) => {
   const currentIndent = indent.repeat(indentCount);
   const br = '\n';
 
-  // Итерируем массив ключей, проверяя наличие каждого ключа в переданных объектах и формируя diff строку
+  // Итерируем массив ключей, проверяя наличие каждого ключа
+  // в переданных объектах и формируя diff строку
   const lines = keys
     .map((key) => {
-        if (!Object.hasOwn(obj2, key)) {
-          return `${currentIndent}- ${key}: ${obj1[key]}`;
-
-        } else if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
-          return `${currentIndent}${genDiff(obj1[key], obj2[key])}`;
-
-        } else if (!Object.hasOwn(obj1, key)) {
-          return `${currentIndent}+ ${key}: ${obj2[key]}`;
-
-        } else if (obj1[key] !== obj2[key]) {
-          return `${currentIndent}- ${key}: ${obj1[key]}${br}${currentIndent}+ ${key}: ${obj2[key]}`;
-
-        } else if (obj1[key] === obj2[key]) {
-          return `${currentIndent}${currentIndent}${key}: ${obj1[key]}`;
-
-        }
+      if (!Object.hasOwn(obj2, key)) {
+        return `${currentIndent}- ${key}: ${obj1[key]}`;
+      } if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
+        return `${currentIndent}${genDiff(obj1[key], obj2[key])}`;
+      } if (!Object.hasOwn(obj1, key)) {
+        return `${currentIndent}+ ${key}: ${obj2[key]}`;
+      } if (obj1[key] !== obj2[key]) {
+        return `${currentIndent}- ${key}: ${obj1[key]}${br}${currentIndent}+ ${key}: ${obj2[key]}`;
+      } if (obj1[key] === obj2[key]) {
+        return `${currentIndent}${currentIndent}${key}: ${obj1[key]}`;
+      }
     });
 
   return ['{',
     ...lines,
-    '}'
+    '}',
   ].join(`${br}`);
 };
 
