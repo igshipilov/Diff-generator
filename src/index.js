@@ -1,21 +1,6 @@
-import path from 'path';
 // import { cwd } from 'node:process'; // почему-то `process.cwd` работает без импорта `cwd`
-import fs from 'fs';
 import _ from 'lodash';
-import { getParsedFile } from './parse.js';
-
-// Получить путь для одного файла
-const getFilePath = (fileName) => {
-  const currentDirectory = process.cwd();
-  const filePath = path.resolve(currentDirectory, fileName);
-
-  // console.log(filePath);
-  return filePath;
-};
-
-console.log(getFilePath('file1.json'));
-
-const getFileContent = (file) => fs.readFileSync(getFilePath(file), 'utf-8');
+import getParsedFile from './parse.js';
 
 const genDiff = (file1, file2) => {
   const obj1 = _.cloneDeep(getParsedFile(file1));
@@ -49,9 +34,8 @@ const genDiff = (file1, file2) => {
         return `${currentIndent}+ ${key}: ${obj2[key]}`;
       } if (obj1[key] !== obj2[key]) {
         return `${currentIndent}- ${key}: ${obj1[key]}${br}${currentIndent}+ ${key}: ${obj2[key]}`;
-      } if (obj1[key] === obj2[key]) {
-        return `${currentIndent}${currentIndent}${key}: ${obj1[key]}`;
       }
+      return `${currentIndent}${currentIndent}${key}: ${obj1[key]}`;
     });
 
   return ['{',
@@ -61,4 +45,4 @@ const genDiff = (file1, file2) => {
 };
 
 // console.log(genDiff('file1.json', 'file2.json'))
-export { genDiff, getFileContent };
+export default genDiff;
