@@ -14,7 +14,7 @@ const getFilePath = (fileName) => {
   return filePath;
 };
 
-// console.log(getFilePath('file1.json'))
+console.log(getFilePath('file1.json'))
 
 
 const getFileContent = (file) => fs.readFileSync(getFilePath(file), 'utf-8');

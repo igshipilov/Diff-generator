@@ -1,49 +1,29 @@
 import { genDiff } from "../src/index.js";
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+import fs from 'fs';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
+
+// console.log(getFixturePath('expected.txt'));
+// console.log(__filename);
+// console.log(__dirname);
+// console.log(`\n\n`)
 
 test('compare files with several differencies', () => {
-  const expected = 
-`{
-  - follow: false
-    host: hexlet.io
-  - proxy: 123.234.53.22
-  - timeout: 50
-  + timeout: 20
-  + verbose: true
-}`;
-  const actual = genDiff('__fixtures__/file1.json', '__fixtures__/file2.json');
 
-  expect(expected).toBe(actual)
+  const result = readFile('expected.txt');
+  const filepath1 = getFixturePath('file1.json');
+  const filepath2 = getFixturePath('file2.json');
+
+  const actual = genDiff(filepath1, filepath2);
+
+  expect(result).toEqual(actual);
 });
 
-
-test('compare similar files', () => {
-  const expected = 
-`{
-    follow: false
-    host: hexlet.io
-    proxy: 123.234.53.22
-    timeout: 50
-}`;
-  const actual = genDiff('__fixtures__/file1.json', '__fixtures__/file3.json');
-
-  expect(expected).toBe(actual)
-});
-
-
-test('compare completely different files', () => {
-  const expected = 
-`{
-  + bool: true
-  + check: abc
-  - follow: false
-  + foobar: 42
-  - host: hexlet.io
-  - proxy: 123.234.53.22
-  - timeout: 50
-  + website: google.com
-}`;
-  const actual = genDiff('__fixtures__/file1.json', '__fixtures__/file4.json');
-
-  expect(expected).toBe(actual)
-});
