@@ -1,6 +1,6 @@
 {
   "name": "frontend-project-46",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Hexlet, second Project: Difference Generator",
   "main": "index.js",
   "type": "module",
@@ -20,6 +20,7 @@
   "dependencies": {
     "commander": "^11.0.0",
     "eslint-config-airbnb": "^19.0.4",
+    "js-yaml": "^4.1.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

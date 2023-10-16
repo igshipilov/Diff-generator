@@ -4,4 +4,4 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0746c48ef8ae17b78479/test_coverage)](https://codeclimate.com/github/igshipilov/frontend-project-46/test_coverage)
 
 ### How it works
-<a href="https://asciinema.org/a/613520?autoplay=1"><img src="https://asciinema.org/a/613520.png" width="836"/></a>
+<a href="https://asciinema.org/a/614642?autoplay=1"><img src="https://asciinema.org/a/614642.png" width="836"/></a>

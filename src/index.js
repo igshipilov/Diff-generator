@@ -1,6 +1,6 @@
 // import { cwd } from 'node:process'; // почему-то `process.cwd` работает без импорта `cwd`
 import _ from 'lodash';
-import getParsedFile from './parse.js';
+import getParsedFile from './parsers.js';
 
 const genDiff = (file1, file2) => {
   const obj1 = _.cloneDeep(getParsedFile(file1));
