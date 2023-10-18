@@ -11,24 +11,27 @@ const getFilePath = (fileName) => {
 
 const getFileContent = (file) => fs.readFileSync(getFilePath(file), 'utf-8');
 
+const getParsedFile = (file) => {
+  if (file.includes('.json')) {
+    return JSON.parse(getFileContent(file))
+  }
+  if (file.includes('.yaml') || file.includes('.yml')) {
+    return yaml.load(getFileContent(file))
+  }
+};
+
 // const getParsedFile = (file) => {
-//   if (file.includes('.json')) {
+//   const pathExtname = path.extname(file);
+//   if (pathExtname === '' || pathExtname === '.json') {
 //     return JSON.parse(getFileContent(file))
 //   }
-//   if (file.includes('.yaml') || file.includes('.yml')) {
+//   if (pathExtname ==='.yaml' || pathExtname ==='.yml') {
 //     return yaml.load(getFileContent(file))
 //   }
 // };
 
-const getParsedFile = (file) => {
-  const pathExtname = path.extname(file);
-  if (pathExtname === '' || pathExtname === '.json') {
-    return JSON.parse(getFileContent(file))
-  }
-  if (pathExtname ==='.yaml' || pathExtname ==='.yml') {
-    return yaml.load(getFileContent(file))
-  }
-};
+
+
 // console.log(getParsedFile('__fixtures__/file2.yml'))
 
 export default getParsedFile;
