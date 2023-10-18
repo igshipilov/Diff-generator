@@ -12,12 +12,20 @@ const getFilePath = (fileName) => {
 const getFileContent = (file) => fs.readFileSync(getFilePath(file), 'utf-8');
 
 const getParsedFile = (file) => {
-  if (file.includes('.json')) {
-    return JSON.parse(getFileContent(file))
+  const ext = path.extname(file);
+
+  switch (ext) {
+    case '.yaml': return yaml.load(getFileContent(file));
+    case '.yml': return yaml.load(getFileContent(file));
+    default: return JSON.parse(getFileContent(file));
   }
-  if (file.includes('.yaml') || file.includes('.yml')) {
-    return yaml.load(getFileContent(file))
-  }
+
+  // if (file.includes('.json')) {
+  //   return JSON.parse(getFileContent(file))
+  // }
+  // if (file.includes('.yaml') || file.includes('.yml')) {
+  //   return yaml.load(getFileContent(file))
+  // }
 };
 
 // const getParsedFile = (file) => {

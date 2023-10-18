@@ -1,44 +1,7 @@
 import _ from 'lodash';
 import getParsedFile from './parsers.js';
 
-// genDiff v01
-const genDiff = (file1, file2) => {
-  const obj1 = getParsedFile(file1);
-  const obj2 = getParsedFile(file2);
-
-  const iter = (obj1, obj2) => {
-    const keys1 = obj1 ? Object.keys(obj1) : '';
-    const keys2 = obj2 ? Object.keys(obj2) : '';
-  
-    const keys = _.union(keys1, keys2).sort(); // Массив со списком всех ключей из обоих объектов
-
-    const arr = keys.map((key) => {
-      const obj1Key = obj1[key] || ''; // <== FIXME программа падает здесь
-      const obj2Key = obj2[key];
-
-      if (!Object.hasOwn(obj2, key)) {
-        return ['deleted', [key, obj1[key]]];
-      } if (_.isPlainObject(obj1[key]) || _.isPlainObject(obj2[key])) { // <== FIXME точнее, здесь
-        return [key, iter(obj1[key], obj2[key])];
-      } if (!Object.hasOwn(obj1, key)) {
-        return ['added', [key, obj2[key]]];
-      } if (obj1[key] !== obj2[key]) {
-        return ['changed', [key, obj1[key]], [key, obj2[key]]];
-      }
-      return ['unchanged', [key, obj2[key]]];
-      });
-  
-    return arr;
-  }
-
-  return iter(obj1, obj2)
-};
-
-
-
-
-
-// genDiff v02
+// genDiff v01 -- массив массивов
 // const genDiff = (file1, file2) => {
 //   const obj1 = getParsedFile(file1);
 //   const obj2 = getParsedFile(file2);
@@ -50,21 +13,18 @@ const genDiff = (file1, file2) => {
 //     const keys = _.union(keys1, keys2).sort(); // Массив со списком всех ключей из обоих объектов
 
 //     const arr = keys.map((key) => {
-//       const obj1Key = obj1[key] || '';
-//       const obj2Key = obj2[key];
+
 
 //       if (!Object.hasOwn(obj2, key)) {
 //         return ['deleted', [key, obj1[key]]];
+//       } if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
+//         return [key, iter(obj1[key], obj2[key])];
 //       } if (!Object.hasOwn(obj1, key)) {
 //         return ['added', [key, obj2[key]]];
 //       } if (obj1[key] !== obj2[key]) {
 //         return ['changed', [key, obj1[key]], [key, obj2[key]]];
-//       } if (obj1[key] === obj2[key]) {
-//         return ['unchanged', [key, obj2[key]]];
-//       } else {
-//         return [key, iter(obj1[key], obj2[key])]; // не сработало – до сюда не доходит
 //       }
-      
+//       return ['unchanged', [key, obj2[key]]];
 //       });
   
 //     return arr;
@@ -73,9 +33,53 @@ const genDiff = (file1, file2) => {
 //   return iter(obj1, obj2)
 // };
 
-const testResult = JSON.stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'), null, '  ');
-console.log(testResult);
+
+
+// genDiff v03 -- массив объектов
+const genDiff = (file1, file2) => {
+  const obj1 = getParsedFile(file1);
+  const obj2 = getParsedFile(file2);
+
+  const iter = (obj1, obj2) => {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+  
+    const keys = _.union(keys1, keys2).sort(); // Массив со списком всех ключей из обоих объектов
+
+    const arr = keys.map((key) => {
+
+      const isKey1Object = _.isPlainObject(obj1[key]); // <== программа падает здесь
+      const isKey2Object = _.isPlainObject(obj2[key]);
+
+      if (!Object.hasOwn(obj2, key)) {
+        return { stat: 'deleted', [key]: obj1[key] }
+
+      } if (!Object.hasOwn(obj1, key)) {
+        return { stat: 'added', [key]: obj2[key] }
+
+      } if (isKey1Object && isKey2Object) {
+        return { stat: 'nested', [key]: iter(obj1[key], obj2[key])}
+
+      } if (obj1[key] !== obj2[key]) {
+        return { stat: 'changed', [key]: [obj1[key], obj2[key]] }
+
+      }
+      return { stat: 'unchanged', [key]: obj2[key] }
+      });
+  
+    return arr;
+  }
+
+  return iter(obj1, obj2)
+};
+
+
+
+// const testResult = JSON.stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'), null, '  ');
+// console.log(testResult);
+
 // console.log('>> genDiff:');
+// console.log(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'));
 // console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
 // console.log(`\n\n`);
 
@@ -141,38 +145,61 @@ console.log(testResult);
 
 
 
+// FIXME
+// 1
+// РАБОТАЕТ для myExpectedFinal.txt
+// НЕ РАБОТАЕТ для expected.txt
+
+// 2
+// Не работают отступы
+//    -- для 'unchanged' (setting1)
+//    -- для значений-объектов (setting5)
 
 
-
-
-const stringify = (data, replacer = ' ', spaceCount = 2) => {
+const stringify = (data) => {
   const iter = (node, depth) => {
     // if (!_.isPlainObject(node)) {
     //   return `${node}`;
     // }
 
-    const indentSize = spaceCount * depth;
-    const currentIndent = replacer.repeat(indentSize);
-    const bracketIndent = replacer.repeat(indentSize - spaceCount);
-    const br = '\n';
+    if (_.isPlainObject(node)) {
+      return [node];
+    }
 
-    const arr = node.map(([stat, pair1, pair2]) => {
-      const [key1, value1] = pair1;
-      const [key2, value2] = pair2;
+  const spacer = ' ';
+  const spacerCount = 2;
+  const indentCount = spacerCount * depth;
+  const currentIndent = spacer.repeat(indentCount);
+  const bracketIndent = spacer.repeat(indentCount - spacerCount);
+  const br = '\n';
 
+  const statSign = (stat) => {
+    switch (stat) {
+      case 'deleted': return '- ';
+      case 'added': return '+ ';
+      case 'changed': return ['- ', '+ '];
+      case 'unchanged': return '  ';
+    }
+  };
+
+    const arr = node.map((obj) => {
+      const [currentStat, key] = Object.keys(obj);
+      const value = obj[key];
+      const stat = obj[currentStat];
+      
       if (_.isPlainObject(value)) {
-        const result = `${currentIndent}${key1}: ${iter(value1, depth + 1)}`;
+        const result = `${currentIndent}${key}: ${iter(value, depth + 1)}`;
 
         return result;
       }
       if (stat === 'added') {
-        return `${currentIndent}+ ${key1}: ${value1}`;
-      } if (stat = 'deleted') {
-        return `${currentIndent}- ${key1}: ${value1}`;
-      } if (stat = 'changed') {
-        return `${currentIndent}- ${key1}: ${value1}${br}${currentIndent}+ ${key2}: ${value2}`;
-      } if (stat = 'unchanged') {
-        return `${currentIndent} ${key1}: ${value1}`;
+        return `${currentIndent}+ ${key}: ${value}`;
+      } if (stat === 'deleted') {
+        return `${currentIndent}- ${key}: ${value}`;
+      } if (stat === 'changed') {
+        return `${currentIndent}- ${key}: ${value}${br}${currentIndent}+ ${key}: ${value}`;
+      } if (stat === 'unchanged') {
+        return `${currentIndent} ${key}: ${value}`;
       }
     });
 
@@ -186,11 +213,13 @@ const stringify = (data, replacer = ' ', spaceCount = 2) => {
 export default genDiff;
 
 // console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
+// console.log(getStylishDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'));
 // console.log(getStylishDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
 
 
 
 
 
-// console.log('>> stringify:');
+console.log('>> stringify:');
+console.log(stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json')));
 // console.log(stringify(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json')));

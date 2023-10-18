@@ -1,0 +1,12 @@
+[
+  { stat: 'added', follow: false }
+  { stat: 'unchanged', setting1: "Value 1" }
+  { stat: 'deleted', setting2: 200}
+  { stat: 'deleted', setting3: true}
+  { stat: 'added', setting3: null}
+  { stat: 'added', setting4: "blah blah"}
+  { stat: 'added', setting5: [
+      { stat: 'unchanged', key5: value5 }
+    ]
+  }
+]

@@ -13,18 +13,22 @@ const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8'
 // console.log(__dirname);
 // console.log(`\n\n`)
 
+// console.log(readFile('myExpectedIntermediate.txt'))
+
 test('genDiff', () => {
 
   const filepath1 = getFixturePath('gdFile1.json');
   const filepath2 = getFixturePath('gdFile2.json');
 
   const desired = [
-    ['added', ['follow', false]],
-    ['unchanged', ['setting1', 'Value 1']],
-    ['deleted', ['setting2', 200]],
-    ['changed', ['setting3', true], ['setting3', null]],
-    ['added', ['setting4', 'blah blah']],
-    ['added', ['setting5', ['unchanged', ['key5', 'value5']]]]
+    { stat: 'added', follow: false },
+    { stat: 'unchanged', setting1: "Value 1" },
+    { stat: 'deleted', setting2: 200},
+    { stat: 'changed', setting3: [true, null] },
+    { stat: 'added', setting4: "blah blah"},
+    { stat: 'added', setting5: 
+        { key5: 'value5' }
+    }
   ];
 
   const actual = genDiff(filepath1, filepath2);
