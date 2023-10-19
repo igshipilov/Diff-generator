@@ -1,42 +1,123 @@
 import _ from 'lodash';
 import getParsedFile from './parsers.js';
 
-// genDiff v01 -- массив массивов
-// const genDiff = (file1, file2) => {
+const getStylish = (data) => {
+  const iter = (node, depth) => {
+    // if (!Array.isArray(node)) { 
+    if (!_.isPlainObject(node) && !Array.isArray(node)) {
+      return node;
+    }
+    // if (_.isPlainObject(node)) {
+    //   return iter([node], depth + 1);
+    // }
+
+
+
+    const spacer = ' ';
+    const spacerCount = 4;
+    const indentCount = (spacerCount * depth) - 2;
+    const currentIndent = spacer.repeat(indentCount);
+    const bracketIndent = spacer.repeat(indentCount - (spacerCount / 2));
+    const br = '\n';
+
+    const statSign = (stat) => {
+      switch (stat) {
+        case 'deleted': return '- ';
+        case 'added': return '+ ';
+        case 'changed': return ['- ', '+ '];
+        default: return '  ';
+      }
+    };
+
+      const arr = node.map((obj) => {
+        const [currentStat, key] = Object.keys(obj);
+        const value = obj[key];
+        const stat = obj[currentStat];
+
+        if (stat === 'added') {
+          return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`;
+
+        } if (stat === 'deleted') {
+          return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`;
+
+        } if (stat === 'changed') {
+          const [value1, value2] = value;
+          const [deleted, added] = statSign(stat);
+
+          // FIXME -- возвращает неправильный результат:
+          // `nest: [object Object]` вместо `nest: { key: value }`
+
+          // Гипотеза: в return нужно заменить value1 и value2 на
+          // iter(value1, depth + 1) и iter(value2, depth + 1)
+
+          // но если так сделать, то вылетает ошибка:
+          // TypeError: node.map is not a function
+          // потому что я пытаюсь замэпить `{ key: value }`,
+          // когда итеративно проваливаюсь в value1
+          return `${currentIndent}${deleted}${key}: ${value1}${br}${currentIndent}${added}${key}: ${value2}`;
+
+        } if (stat === 'unchanged') {
+          return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`;
+
+        } if (stat === 'nested') {
+          return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`
+        }
+      });
+
+      return ['{', ...arr, `${bracketIndent}}`].join('\n');
+    };
+
+  return iter(data, 1);
+};
+
+
+// genDiff v03 -- массив объектов
+// const genDiff = (file1, file2, formatter = 'stylish') => {
 //   const obj1 = getParsedFile(file1);
 //   const obj2 = getParsedFile(file2);
 
 //   const iter = (obj1, obj2) => {
-//     const keys1 = obj1 ? Object.keys(obj1) : '';
-//     const keys2 = obj2 ? Object.keys(obj2) : '';
+//     const keys1 = Object.keys(obj1);
+//     const keys2 = Object.keys(obj2);
   
 //     const keys = _.union(keys1, keys2).sort(); // Массив со списком всех ключей из обоих объектов
 
 //     const arr = keys.map((key) => {
 
+//       const isKey1Object = _.isPlainObject(obj1[key]); // <== программа падает здесь
+//       const isKey2Object = _.isPlainObject(obj2[key]);
 
 //       if (!Object.hasOwn(obj2, key)) {
-//         return ['deleted', [key, obj1[key]]];
-//       } if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
-//         return [key, iter(obj1[key], obj2[key])];
+//         return { stat: 'deleted', [key]: obj1[key] }
+
 //       } if (!Object.hasOwn(obj1, key)) {
-//         return ['added', [key, obj2[key]]];
+//         return { stat: 'added', [key]: obj2[key] }
+
+//       } if (isKey1Object && isKey2Object) {
+//         return { stat: 'nested', [key]: iter(obj1[key], obj2[key])}
+
 //       } if (obj1[key] !== obj2[key]) {
-//         return ['changed', [key, obj1[key]], [key, obj2[key]]];
+//         return { stat: 'changed', [key]: [obj1[key], obj2[key]] }
+
 //       }
-//       return ['unchanged', [key, obj2[key]]];
+//       return { stat: 'unchanged', [key]: obj2[key] }
 //       });
   
 //     return arr;
 //   }
-
-//   return iter(obj1, obj2)
+  
+//   const resultData = iter(obj1, obj2);
+//   // return resultData;
+//   switch (formatter) {
+//     default: return getStylish(resultData);
+//   }
 // };
 
 
 
-// genDiff v03 -- массив объектов
-const genDiff = (file1, file2) => {
+
+// genDiff v04 -- массив объектов, вложенность изменённых ключей
+const genDiff = (file1, file2, formatter = 'stylish') => {
   const obj1 = getParsedFile(file1);
   const obj2 = getParsedFile(file2);
 
@@ -51,11 +132,14 @@ const genDiff = (file1, file2) => {
       const isKey1Object = _.isPlainObject(obj1[key]); // <== программа падает здесь
       const isKey2Object = _.isPlainObject(obj2[key]);
 
+
       if (!Object.hasOwn(obj2, key)) {
-        return { stat: 'deleted', [key]: obj1[key] }
+        const actualKey1 = isKey1Object ? iter(obj1[key], obj1[key]) : obj1[key];
+        return { stat: 'deleted', [key]: actualKey1 }
 
       } if (!Object.hasOwn(obj1, key)) {
-        return { stat: 'added', [key]: obj2[key] }
+        const actualKey2 = isKey2Object ? iter(obj2[key], obj2[key]) : obj2[key];
+        return { stat: 'added', [key]: actualKey2  }
 
       } if (isKey1Object && isKey2Object) {
         return { stat: 'nested', [key]: iter(obj1[key], obj2[key])}
@@ -70,17 +154,27 @@ const genDiff = (file1, file2) => {
     return arr;
   }
 
-  return iter(obj1, obj2)
+  const resultData = iter(obj1, obj2);
+
+  // return resultData;
+  
+  switch (formatter) {
+    default: return getStylish(resultData);
+  }
 };
 
 
 
+
+
+
+
+console.log('>> genDiff:');
 // const testResult = JSON.stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'), null, '  ');
 // console.log(testResult);
 
-// console.log('>> genDiff:');
 // console.log(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'));
-// console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
+console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
 // console.log(`\n\n`);
 
 
@@ -145,69 +239,9 @@ const genDiff = (file1, file2) => {
 
 
 
-// FIXME
-// 1
-// РАБОТАЕТ для myExpectedFinal.txt
-// НЕ РАБОТАЕТ для expected.txt
-
-// 2
-// Не работают отступы
-//    -- для 'unchanged' (setting1)
-//    -- для значений-объектов (setting5)
 
 
-const stringify = (data) => {
-  const iter = (node, depth) => {
-    // if (!_.isPlainObject(node)) {
-    //   return `${node}`;
-    // }
 
-    if (_.isPlainObject(node)) {
-      return [node];
-    }
-
-  const spacer = ' ';
-  const spacerCount = 2;
-  const indentCount = spacerCount * depth;
-  const currentIndent = spacer.repeat(indentCount);
-  const bracketIndent = spacer.repeat(indentCount - spacerCount);
-  const br = '\n';
-
-  const statSign = (stat) => {
-    switch (stat) {
-      case 'deleted': return '- ';
-      case 'added': return '+ ';
-      case 'changed': return ['- ', '+ '];
-      case 'unchanged': return '  ';
-    }
-  };
-
-    const arr = node.map((obj) => {
-      const [currentStat, key] = Object.keys(obj);
-      const value = obj[key];
-      const stat = obj[currentStat];
-      
-      if (_.isPlainObject(value)) {
-        const result = `${currentIndent}${key}: ${iter(value, depth + 1)}`;
-
-        return result;
-      }
-      if (stat === 'added') {
-        return `${currentIndent}+ ${key}: ${value}`;
-      } if (stat === 'deleted') {
-        return `${currentIndent}- ${key}: ${value}`;
-      } if (stat === 'changed') {
-        return `${currentIndent}- ${key}: ${value}${br}${currentIndent}+ ${key}: ${value}`;
-      } if (stat === 'unchanged') {
-        return `${currentIndent} ${key}: ${value}`;
-      }
-    });
-
-    return ['{', ...arr, `${bracketIndent}}`].join('\n');
-  };
-
-  return iter(data, 1);
-};
 
 
 export default genDiff;
@@ -220,6 +254,12 @@ export default genDiff;
 
 
 
-console.log('>> stringify:');
-console.log(stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json')));
-// console.log(stringify(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json')));
+// console.log('>> stringify:');
+// console.log(stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json')));
+// console.log(genDiff(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json')));
+// console.log(genDiff(
+//   genDiff(
+//     '/home/igshipilov/frontend-project-46/__fixtures__/file1.json',
+//     '/home/igshipilov/frontend-project-46/__fixtures__/file2.json'
+//   )
+// ));

@@ -15,37 +15,49 @@ const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8'
 
 // console.log(readFile('myExpectedIntermediate.txt'))
 
-test('genDiff', () => {
+// test('genDiff before formatting', () => {
 
-  const filepath1 = getFixturePath('gdFile1.json');
-  const filepath2 = getFixturePath('gdFile2.json');
+//   const filepath1 = getFixturePath('gdFile1.json');
+//   const filepath2 = getFixturePath('gdFile2.json');
 
-  const desired = [
-    { stat: 'added', follow: false },
-    { stat: 'unchanged', setting1: "Value 1" },
-    { stat: 'deleted', setting2: 200},
-    { stat: 'changed', setting3: [true, null] },
-    { stat: 'added', setting4: "blah blah"},
-    { stat: 'added', setting5: 
-        { key5: 'value5' }
-    }
-  ];
+//   const desired = [
+//     { stat: 'added', follow: false },
+//     { stat: 'unchanged', setting1: "Value 1" },
+//     { stat: 'deleted', setting2: 200},
+//     { stat: 'changed', setting3: [true, null] },
+//     { stat: 'added', setting4: "blah blah"},
+//     { stat: 'added', setting5: 
+//         { key5: 'value5' }
+//     }
+//   ];
+
+//   const actual = genDiff(filepath1, filepath2);
+
+//   expect(actual).toEqual(desired);
+// });
+
+
+// test('compare simple JSON-files', () => {
+//   const desired = readFile('myExpectedFinal.txt');
+//   const filepath1 = getFixturePath('gdFile1.json');
+//   const filepath2 = getFixturePath('gdFile2.json');
+
+//   const actual = genDiff(filepath1, filepath2);
+
+//   expect(actual).toEqual(desired);
+// });
+
+
+test('compare complex JSON-files', () => {
+  const desired = readFile('expected.txt');
+  const filepath1 = getFixturePath('file1.json');
+  const filepath2 = getFixturePath('file2.json');
 
   const actual = genDiff(filepath1, filepath2);
 
   expect(actual).toEqual(desired);
 });
 
-
-// test('compare JSON-files', () => {
-//   const result = readFile('expected.txt');
-//   const filepath1 = getFixturePath('file1.json');
-//   const filepath2 = getFixturePath('file2.json');
-
-//   const actual = genDiff(filepath1, filepath2);
-
-//   expect(result).toEqual(actual);
-// });
 
 // test('compare YAML-files', () => {
 //   const result = readFile('expected.txt');
