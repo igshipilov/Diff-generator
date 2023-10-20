@@ -19,14 +19,26 @@ const getParsedFile = (file) => {
     case '.yml': return yaml.load(getFileContent(file));
     default: return JSON.parse(getFileContent(file));
   }
-
-  // if (file.includes('.json')) {
-  //   return JSON.parse(getFileContent(file))
-  // }
-  // if (file.includes('.yaml') || file.includes('.yml')) {
-  //   return yaml.load(getFileContent(file))
-  // }
 };
+
+
+
+// const getParsedFile = (file) => {
+//   const ext = path.extname(file);
+
+//   switch (ext) {
+//     case '.yaml': return yaml.load(getFileContent(file));
+//     case '.yml': return yaml.load(getFileContent(file));
+//     default: return JSON.parse(getFileContent(file));
+//   }
+
+//   // if (file.includes('.json')) {
+//   //   return JSON.parse(getFileContent(file))
+//   // }
+//   // if (file.includes('.yaml') || file.includes('.yml')) {
+//   //   return yaml.load(getFileContent(file))
+//   // }
+// };
 
 // const getParsedFile = (file) => {
 //   const pathExtname = path.extname(file);
@@ -43,3 +55,14 @@ const getParsedFile = (file) => {
 // console.log(getParsedFile('__fixtures__/file2.yml'))
 
 export default getParsedFile;
+
+console.log(getParsedFile('__fixtures__/test.yaml'))
+
+
+// ИСПОЛЬЗУЙ потом эту конструкцию:
+// const mapping = {
+//   yml: yaml.load,
+//   json: JSON.parse,
+// };
+
+// const parse = (type, data) => mapping[type](data);

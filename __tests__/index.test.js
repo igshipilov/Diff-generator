@@ -59,52 +59,52 @@ test('compare complex JSON-files', () => {
 });
 
 
-// test('compare YAML-files', () => {
-//   const result = readFile('expected.txt');
-//   const filepath1 = getFixturePath('file1.yaml');
-//   const filepath2 = getFixturePath('file2.yml');
+test('compare YAML-files', () => {
+  const desired = readFile('expected.txt');
+  const filepath1 = getFixturePath('file1.yaml');
+  const filepath2 = getFixturePath('file2.yml');
 
-//   const actual = genDiff(filepath1, filepath2);
+  const actual = genDiff(filepath1, filepath2);
 
-//   expect(result).toEqual(actual);
-// });
+  expect(actual).toEqual(desired);
+});
 
 // test('compare JSON-files with YAML-files', () => {
-//   const result = readFile('expected.txt');
+//   const desired = readFile('expected.txt');
 //   const filepath1 = getFixturePath('file1.json');
 //   const filepath2 = getFixturePath('file2.yml');
 
 //   const actual = genDiff(filepath1, filepath2);
 
-//   expect(result).toEqual(actual);
+//   expect(actual).toEqual(desired);
 // });
 
 // test('compare file without format', () => {
-//   const result = readFile('expected.txt');
+//   const desired = readFile('expected.txt');
 //   const filepath1 = getFixturePath('file1');
 //   const filepath2 = getFixturePath('file2.yml');
 
 //   const actual = genDiff(filepath1, filepath2);
 
-//   expect(result).toEqual(actual);
+//   expect(actual).toEqual(desired);
 // });
 
 // test('compare empty files', () => {
-//   const result = readFile('expectedEmpty.txt');
+//   const desired = readFile('expectedEmpty.txt');
 //   const filepath1 = getFixturePath('fileEmpty1');
 //   const filepath2 = getFixturePath('fileEmpty2');
 
 //   const actual = genDiff(filepath1, filepath2);
 
-//   expect(result).toEqual(actual);
+//   expect(actual).toEqual(desired);
 // });
 
 // test('compare empty JSON (empty objects)', () => {
-//   const result = readFile('expectedEmpty.txt');
+//   const desired = readFile('expectedEmpty.txt');
 //   const file1 = {};
 //   const file2 = {};
 
 //   const actual = genDiff(file1, file2);
 
-//   expect(result).toEqual(actual);
+//   expect(actual).toEqual(desired);
 // });
