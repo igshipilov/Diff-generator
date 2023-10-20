@@ -56,10 +56,12 @@ const getParsedFile = (file) => {
 
 export default getParsedFile;
 
-console.log(getParsedFile('__fixtures__/test.yaml'))
+// console.log(getParsedFile('__fixtures__/test.yaml'));
 
 
 // ИСПОЛЬЗУЙ потом эту конструкцию:
+// сурс: https://ru.hexlet.io/courses/js-polymorphism/lessons/dispatch-functions-by-key/theory_unit
+
 // const mapping = {
 //   yml: yaml.load,
 //   json: JSON.parse,

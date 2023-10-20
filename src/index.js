@@ -188,14 +188,14 @@ const genDiff = (file1, file2, formatter = 'stylish') => {
 
 
 
-console.log('>> genDiff:');
+// console.log('>> genDiff:');
 // const testResult = JSON.stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'), null, '  ');
 // const testResult = JSON.stringify(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'), null, 2);
 // console.log(testResult);
 
 // console.log(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'));
 // console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
-console.log(genDiff('__fixtures__/file1.yaml', '__fixtures__/file2.yml'));
+// console.log(genDiff('__fixtures__/file1.yaml', '__fixtures__/file2.yml'));
 // console.log(`\n\n`);
 
 
