@@ -4,13 +4,14 @@ import getParsedFile from './parsers.js';
 const getStylish = (data) => {
   const iter = (node, depth) => {
     // if (!Array.isArray(node)) { 
+
     if (!_.isPlainObject(node) && !Array.isArray(node)) {
       return node;
     }
+
     // if (_.isPlainObject(node)) {
     //   return iter([node], depth + 1);
     // }
-
 
 
     const spacer = ' ';
@@ -33,6 +34,9 @@ const getStylish = (data) => {
         const [currentStat, key] = Object.keys(obj);
         const value = obj[key];
         const stat = obj[currentStat];
+        if (!_.has(obj, 'stat')) {
+          return obj;
+        }
 
         if (stat === 'added') {
           return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`;
@@ -44,6 +48,15 @@ const getStylish = (data) => {
           const [value1, value2] = value;
           const [deleted, added] = statSign(stat);
 
+          const processValue = (val) => {
+            if (_.isPlainObject(val)) {
+              const entries = Object.entries(val);
+              const result = entries.map(([key, value]) => `${key}: ${processValue(value)}`);
+              return `{\n${result.join(',\n')}\n}`;
+            }
+            return val;
+          }
+          
           // FIXME -- возвращает неправильный результат:
           // `nest: [object Object]` вместо `nest: { key: value }`
 
@@ -52,9 +65,13 @@ const getStylish = (data) => {
 
           // но если так сделать, то вылетает ошибка:
           // TypeError: node.map is not a function
-          // потому что я пытаюсь замэпить `{ key: value }`,
-          // когда итеративно проваливаюсь в value1
-          return `${currentIndent}${deleted}${key}: ${value1}${br}${currentIndent}${added}${key}: ${value2}`;
+          // потому что я пытаюсь замэпить объект `{ key: value }`,
+          // когда итеративно проваливаюсь в value1 и value2
+
+          // return `${currentIndent}${deleted}${key}: ${value1}${br}${currentIndent}${added}${key}: ${value2}`;
+          return `${currentIndent}${deleted}${key}: ${processValue(value1)}${br}${currentIndent}${added}${key}: ${processValue(value2)}`;
+          // return `${currentIndent}${deleted}${key}: ${iter(value1, depth + 1)}${br}${currentIndent}${added}${key}: ${iter(value2, depth + 1)}`;
+          // return `${currentIndent}${deleted}${key}: ${processValue(value1)}${br}${currentIndent}${added}${key}: ${processValue(value2)}`;
 
         } if (stat === 'unchanged') {
           return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`;
@@ -64,7 +81,8 @@ const getStylish = (data) => {
         }
       });
 
-      return ['{', ...arr, `${bracketIndent}}`].join('\n');
+      return ['{', ...arr, `${bracketIndent}}`]
+        .join('\n');
     };
 
   return iter(data, 1);
@@ -171,6 +189,7 @@ const genDiff = (file1, file2, formatter = 'stylish') => {
 
 console.log('>> genDiff:');
 // const testResult = JSON.stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'), null, '  ');
+// const testResult = JSON.stringify(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'), null, 2);
 // console.log(testResult);
 
 // console.log(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'));

@@ -8,7 +8,7 @@
     "test": "npx jest"
   },
   "bin": {
-    "gendiff": "gendiff.js"
+    "gendiff": "bin/gendiff.js"
   },
   "keywords": [
     "study",
