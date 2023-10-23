@@ -137,6 +137,83 @@ const getStylish = (data) => {
 };
 
 
+
+
+
+// Формат вывода:
+// `Property ${propertyPath} was ${stat}`
+  // -- stat: 'added' --> `...with value: ${value}`
+  // -- stat: 'removed' --> (ничего больше не пишем)
+  // -- stat: 'changed' --> `...updated. From ${valueOld} to ${valueNew}` 
+
+// Он должен проваливаться до тех пор, пока `stat === 'nested'`
+
+// TODO
+// До тех пор, пока `stat === 'nested'`, строим путь:
+// К названию текущего ключа приписываем
+
+// Если stat !== 'nested && !_.isPlainObject(value)
+// return propertyPath
+// Иначе рекурсия: 
+const getPropertyPath = (stat, key) => {
+  const iter = (propertyPath) => {
+    if (stat === 'nested') {
+      return iter(`${propertyPath}${key}.`)
+    } return `${propertyPath}${key}`
+  };
+
+  return iter('');
+};
+
+
+const makePlainData = (data) => {
+  const [currentStat, key] = Object.keys(data);
+  const stat = data[currentStat];
+  const value = data[key];
+
+  let propertyPath = '';
+  if (stat !== 'nested' && !_.isPlainObject(value)) {
+
+  }
+
+
+  return { propertyPath: propertyPath, [currentStat]: stat, [key]: value }
+};
+
+const testData = { stat: 'nested', one: { stat: 'added', two: 'value2' } };
+console.log(`>> makePlainData:\n`);
+console.log(makePlainData(testData));
+console.log(`\n\n`);
+
+
+const getPlain = (data) => {
+  const arr = data.map((node) => {
+    const [currentStat, key] = Object.keys(node);
+    const stat = node[currentStat];
+    const value = _.isPlainObject(node[key]) ? '[complex value]' : node[key];
+    const propertyPath = getPropertyPath(value);
+
+
+
+    switch (stat) {
+      case 'added': return `Property ${propertyPath} was ${stat} with value: ${value}`;
+      case 'deleted': return `Property ${propertyPath} was removed`;
+      case 'changed': {
+        const [valueOld, valueNew] = value;
+        return `Property ${propertyPath} was updated. From ${valueOld} to ${valueNew}`
+      };
+      // default: return '';
+    }
+  });
+
+  const result = arr
+    // .join('\n');
+
+  return result;
+};
+
+
+
 // genDiff v04 -- массив объектов, вложенность изменённых ключей
 const genDiff = (file1, file2, formatter = 'stylish') => {
   const obj1 = getParsedFile(file1);
@@ -150,7 +227,7 @@ const genDiff = (file1, file2, formatter = 'stylish') => {
 
     const arr = keys.map((key) => {
 
-      const isKey1Object = _.isPlainObject(obj1[key]); // <== программа падает здесь
+      const isKey1Object = _.isPlainObject(obj1[key]);
       const isKey2Object = _.isPlainObject(obj2[key]);
 
 
@@ -180,6 +257,7 @@ const genDiff = (file1, file2, formatter = 'stylish') => {
   // return resultData;
   
   switch (formatter) {
+    case 'plain': return getPlain(resultData);
     default: return getStylish(resultData);
   }
 };
@@ -190,13 +268,13 @@ const genDiff = (file1, file2, formatter = 'stylish') => {
 
 
 
-// console.log('>> genDiff:');
+console.log('>> genDiff:');
 // const testResult = JSON.stringify(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'), null, '  ');
-// const testResult = JSON.stringify(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'), null, 2);
+// const testResult = JSON.stringify(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'plain'), null, 2);
 // console.log(testResult);
 
 // console.log(genDiff('__fixtures__/gdFile1.json', '__fixtures__/gdFile2.json'));
-// console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
+console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'plain'));
 // console.log(genDiff('__fixtures__/file1.yaml', '__fixtures__/file2.yml'));
 // console.log(`\n\n`);
 
