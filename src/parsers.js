@@ -11,60 +11,17 @@ const getFilePath = (fileName) => {
 
 const getFileContent = (file) => fs.readFileSync(getFilePath(file), 'utf-8');
 
-const getParsedFile = (file) => {
-  const ext = path.extname(file);
-
-  switch (ext) {
-    case '.yaml': return yaml.load(getFileContent(file));
-    case '.yml': return yaml.load(getFileContent(file));
-    default: return JSON.parse(getFileContent(file));
-  }
+const mapping = {
+  json: JSON.parse || '',
+  yaml: yaml.load,
+  yml: yaml.load
 };
 
+const getParsedFile = (file) => { 
+  const type = path.extname(file).replaceAll('.', '') || 'json'
+  const data = getFileContent(file);
 
-
-// const getParsedFile = (file) => {
-//   const ext = path.extname(file);
-
-//   switch (ext) {
-//     case '.yaml': return yaml.load(getFileContent(file));
-//     case '.yml': return yaml.load(getFileContent(file));
-//     default: return JSON.parse(getFileContent(file));
-//   }
-
-//   // if (file.includes('.json')) {
-//   //   return JSON.parse(getFileContent(file))
-//   // }
-//   // if (file.includes('.yaml') || file.includes('.yml')) {
-//   //   return yaml.load(getFileContent(file))
-//   // }
-// };
-
-// const getParsedFile = (file) => {
-//   const pathExtname = path.extname(file);
-//   if (pathExtname === '' || pathExtname === '.json') {
-//     return JSON.parse(getFileContent(file))
-//   }
-//   if (pathExtname ==='.yaml' || pathExtname ==='.yml') {
-//     return yaml.load(getFileContent(file))
-//   }
-// };
-
-
-
-// console.log(getParsedFile('__fixtures__/file2.yml'))
+  return mapping[type](data); 
+};
 
 export default getParsedFile;
-
-// console.log(getParsedFile('__fixtures__/test.yaml'));
-
-
-// ИСПОЛЬЗУЙ потом эту конструкцию:
-// сурс: https://ru.hexlet.io/courses/js-polymorphism/lessons/dispatch-functions-by-key/theory_unit
-
-// const mapping = {
-//   yml: yaml.load,
-//   json: JSON.parse,
-// };
-
-// const parse = (type, data) => mapping[type](data);
