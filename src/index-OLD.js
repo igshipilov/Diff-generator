@@ -254,7 +254,7 @@ const genDiff = (file1, file2, formatter = 'stylish') => {
 
   const resultData = iter(obj1, obj2);
 
-  // return resultData;
+  return resultData;
   
   switch (formatter) {
     case 'plain': return getPlain(resultData);

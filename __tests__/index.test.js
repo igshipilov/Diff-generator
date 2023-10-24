@@ -47,64 +47,130 @@ const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8'
 //   expect(actual).toEqual(desired);
 // });
 
+describe('stylish', () => {
+  test('compare complex JSON-files', () => {
+    const desired = readFile('expected.txt');
+    const filepath1 = getFixturePath('file1.json');
+    const filepath2 = getFixturePath('file2.json');
+  
+    const actual = genDiff(filepath1, filepath2);
+  
+    expect(actual).toEqual(desired);
+  });
+  
+  
+  test('compare YAML-files', () => {
+    const desired = readFile('expected.txt');
+    const filepath1 = getFixturePath('file1.yaml');
+    const filepath2 = getFixturePath('file2.yml');
+  
+    const actual = genDiff(filepath1, filepath2);
+  
+    expect(actual).toEqual(desired);
+  });
+  
+  test('compare JSON-files with YAML-files', () => {
+    const desired = readFile('expected.txt');
+    const filepath1 = getFixturePath('file1.json');
+    const filepath2 = getFixturePath('file2.yml');
+  
+    const actual = genDiff(filepath1, filepath2);
+  
+    expect(actual).toEqual(desired);
+  });
+  
+  test('compare file without format', () => {
+    const desired = readFile('expected.txt');
+    const filepath1 = getFixturePath('file1');
+    const filepath2 = getFixturePath('file2.yml');
+  
+    const actual = genDiff(filepath1, filepath2);
+  
+    expect(actual).toEqual(desired);
+  });
+  
+  // test('compare empty files', () => {
+  //   const desired = readFile('expectedEmpty.txt');
+  //   const filepath1 = getFixturePath('fileEmpty1.json');
+  //   const filepath2 = getFixturePath('fileEmpty2');
+  
+  //   const actual = genDiff(filepath1, filepath2);
+  
+  //   expect(actual).toEqual(desired);
+  // });
+  
+  // test('compare empty JSON (empty objects)', () => {
+  //   const desired = readFile('expectedEmpty.txt');
+  //   const file1 = {};
+  //   const file2 = {};
+  
+  //   const actual = genDiff(file1, file2);
+  
+  //   expect(actual).toEqual(desired);
+  // });
 
-test('compare complex JSON-files', () => {
-  const desired = readFile('expected.txt');
-  const filepath1 = getFixturePath('file1.json');
-  const filepath2 = getFixturePath('file2.json');
-
-  const actual = genDiff(filepath1, filepath2);
-
-  expect(actual).toEqual(desired);
 });
 
+describe('plain', () => {
+  test('compare complex JSON-files', () => {
+    const desired = readFile('expectedPlain.txt');
+    const filepath1 = getFixturePath('file1.json');
+    const filepath2 = getFixturePath('file2.json');
+  
+    const actual = genDiff(filepath1, filepath2, 'plain');
+  
+    expect(actual).toEqual(desired);
+  });
+  
+  
+  test('compare YAML-files', () => {
+    const desired = readFile('expectedPlain.txt');
+    const filepath1 = getFixturePath('file1.yaml');
+    const filepath2 = getFixturePath('file2.yml');
+  
+    const actual = genDiff(filepath1, filepath2, 'plain');
+  
+    expect(actual).toEqual(desired);
+  });
+  
+  test('compare JSON-files with YAML-files', () => {
+    const desired = readFile('expectedPlain.txt');
+    const filepath1 = getFixturePath('file1.json');
+    const filepath2 = getFixturePath('file2.yml');
+  
+    const actual = genDiff(filepath1, filepath2, 'plain');
+  
+    expect(actual).toEqual(desired);
+  });
+  
+  test('compare file without format', () => {
+    const desired = readFile('expectedPlain.txt');
+    const filepath1 = getFixturePath('file1');
+    const filepath2 = getFixturePath('file2.yml');
+  
+    const actual = genDiff(filepath1, filepath2, 'plain');
+  
+    expect(actual).toEqual(desired);
+  });
+  
+  // test('compare empty files', () => {
+  //   const desired = readFile('expectedEmpty.txt');
+  //   const filepath1 = getFixturePath('fileEmpty1.json');
+  //   const filepath2 = getFixturePath('fileEmpty2');
+  
+  //   const actual = genDiff(filepath1, filepath2, 'plain');
+  
+  //   expect(actual).toEqual(desired);
+  // });
+  
+  // test('compare empty JSON (empty objects)', () => {
+  //   const desired = readFile('expectedEmpty.txt');
+  //   const file1 = {};
+  //   const file2 = {};
+  
+  //   const actual = genDiff(file1, file2, 'plain');
+  
+  //   expect(actual).toEqual(desired);
+  // });
 
-test('compare YAML-files', () => {
-  const desired = readFile('expected.txt');
-  const filepath1 = getFixturePath('file1.yaml');
-  const filepath2 = getFixturePath('file2.yml');
-
-  const actual = genDiff(filepath1, filepath2);
-
-  expect(actual).toEqual(desired);
-});
-
-test('compare JSON-files with YAML-files', () => {
-  const desired = readFile('expected.txt');
-  const filepath1 = getFixturePath('file1.json');
-  const filepath2 = getFixturePath('file2.yml');
-
-  const actual = genDiff(filepath1, filepath2);
-
-  expect(actual).toEqual(desired);
-});
-
-test('compare file without format', () => {
-  const desired = readFile('expected.txt');
-  const filepath1 = getFixturePath('file1');
-  const filepath2 = getFixturePath('file2.yml');
-
-  const actual = genDiff(filepath1, filepath2);
-
-  expect(actual).toEqual(desired);
-});
-
-// test('compare empty files', () => {
-//   const desired = readFile('expectedEmpty.txt');
-//   const filepath1 = getFixturePath('fileEmpty1.json');
-//   const filepath2 = getFixturePath('fileEmpty2');
-
-//   const actual = genDiff(filepath1, filepath2);
-
-//   expect(actual).toEqual(desired);
-// });
-
-// test('compare empty JSON (empty objects)', () => {
-//   const desired = readFile('expectedEmpty.txt');
-//   const file1 = {};
-//   const file2 = {};
-
-//   const actual = genDiff(file1, file2);
-
-//   expect(actual).toEqual(desired);
-// });
+})

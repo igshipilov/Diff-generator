@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export default (file1, file2) => {
+export const buildTree = (file1, file2) => {
   const obj1 = file1;
   const obj2 = file2;
 
@@ -18,7 +18,7 @@ export default (file1, file2) => {
 
       if (!Object.hasOwn(obj2, key)) {
         const actualKey1 = isKey1Object ? iter(obj1[key], obj1[key]) : obj1[key];
-        return { stat: 'deleted', [key]: actualKey1 }
+        return { stat: 'removed', [key]: actualKey1 }
 
       } if (!Object.hasOwn(obj1, key)) {
         const actualKey2 = isKey2Object ? iter(obj2[key], obj2[key]) : obj2[key];
@@ -28,7 +28,7 @@ export default (file1, file2) => {
         return { stat: 'nested', [key]: iter(obj1[key], obj2[key])}
 
       } if (obj1[key] !== obj2[key]) {
-        return { stat: 'changed', [key]: [obj1[key], obj2[key]] }
+        return { stat: 'updated', [key]: [obj1[key], obj2[key]] }
 
       }
       return { stat: 'unchanged', [key]: obj2[key] }
@@ -41,3 +41,13 @@ export default (file1, file2) => {
 
   return resultData;
 };
+
+
+
+// ===== TESTS ========
+// import { getData } from './formatter/index.js';
+
+// const test = buildTree(getData('__fixtures__/file1.json'), getData('__fixtures__/file2.json'));
+// console.log(test[0].common[5]);
+// console.log(JSON.stringify(test, null, 2));
+// ====================

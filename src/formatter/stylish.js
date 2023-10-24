@@ -16,9 +16,9 @@ export default (data) => {
 
     const statSign = (stat) => {
       switch (stat) {
-        case 'deleted': return '- ';
+        case 'removed': return '- ';
         case 'added': return '+ ';
-        case 'changed': return ['- ', '+ '];
+        case 'updated': return ['- ', '+ '];
         default: return '  ';
       }
     };
@@ -29,7 +29,7 @@ export default (data) => {
         const stat = obj[currentStat];
 
         switch (stat) {
-          case 'changed':
+          case 'updated':
           const [value1, value2] = value;
           const [deleted, added] = statSign(stat);
 

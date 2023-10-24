@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import parse from '../parsers.js';
-import buildTree from '../buildTree.js';
+import { buildTree } from '../buildTree.js';
 import getStylish from './stylish.js';
 import getPlain from './plain.js';
 
@@ -11,7 +11,7 @@ const buildFullPath = (filepath) => path.resolve(process.cwd(), filepath);
 const getData = (filepath) => parse(getFileType(filepath), fs.readFileSync(filepath, 'utf-8'));
 
 const formatDiff = (diff, formatName) => {
-  switch (formatName.toLowerCase()) {
+  switch (formatName) {
     case 'plain': return getPlain(diff);
     default: return getStylish(diff);
   }
@@ -28,3 +28,5 @@ export const genDiff = (pathFile1, pathFile2, formatName = 'stylish') => {
 // console.log(buildFullPath('file1.json'));
 // console.log(process.cwd());
 // console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
+
+export { getData };
