@@ -166,23 +166,13 @@ import { buildTree } from '../buildTree.js';
 
 
 const correctValue = (value) => {
-  // // ------ Никогда не срабатывает --------
-  // if (_.isPlainObject(value)) {
-  //   return '[complex value]';
-  // }
-  // // --------------------------------------
+  if (_.isObject(value)) {
+    return '[complex value]';
+  }
 
   if (Array.isArray(value)) {
     const result = value.map((node) => _.isPlainObject(node) ? '[complex value]' :  correctValue(node));
-    // const fin = result.includes('[complex value]') ? '[complex value]' : result;
-    
     return result;
-
-    // // ------ Не работает --------
-    // if (_.isPlainObject(value[0])) {
-    //   return '[complex value]';
-    // } return correctValue(value[0]);
-    // // ---------------------------
   } 
   const correctedValue = typeof value === 'string' ? `'${value}'` : value;
   
@@ -193,8 +183,9 @@ const correctValue = (value) => {
 export const getPlain = (data) => {
   const iter = (arr, propPath) => {
     const result = arr.flatMap((node) => {
-      const pairs = Object.entries(node); // [['stat', 'nested'], ['common', '[Array]']]
-      const [[statName, stat], [key, value]] = pairs;
+      const key = node.key;
+      const value = node.value;
+      const stat = node.stat;
 
       const propertyPath = path.join(propPath, key);
       const formattedPath = propertyPath.replaceAll('/', '.')
@@ -204,7 +195,15 @@ export const getPlain = (data) => {
         case 'nested': return iter(value, formattedPath);
         case 'removed': return `Property '${formattedPath}' was ${stat}`;
         case 'added': return `Property '${formattedPath}' was ${stat} with value: ${curentValue}`;
-        case 'updated': return `Property '${formattedPath}' was ${stat}. From ${curentValue[0]} to ${curentValue[1]}`;
+        case 'updated': {
+          const valueOld = node.valueOld;
+          const valueNew = node.valueNew;
+
+          const valueOldFormatted = correctValue(valueOld);
+          const valueNewFormatted = correctValue(valueNew);
+
+          return `Property '${formattedPath}' was ${stat}. From ${valueOldFormatted} to ${valueNewFormatted}`;
+        };
         default: return '';
       }
     });

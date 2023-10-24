@@ -18,20 +18,20 @@ export const buildTree = (file1, file2) => {
 
       if (!Object.hasOwn(obj2, key)) {
         const actualKey1 = isKey1Object ? iter(obj1[key], obj1[key]) : obj1[key];
-        return { stat: 'removed', [key]: actualKey1 }
+        return { stat: 'removed', key: key, value: actualKey1 }
 
       } if (!Object.hasOwn(obj1, key)) {
         const actualKey2 = isKey2Object ? iter(obj2[key], obj2[key]) : obj2[key];
-        return { stat: 'added', [key]: actualKey2  }
+        return { stat: 'added', key: key, value: actualKey2 }
 
       } if (isKey1Object && isKey2Object) {
-        return { stat: 'nested', [key]: iter(obj1[key], obj2[key])}
+        return { stat: 'nested', key: key, value: iter(obj1[key], obj2[key])}
 
       } if (obj1[key] !== obj2[key]) {
-        return { stat: 'updated', [key]: [obj1[key], obj2[key]] }
+        return { stat: 'updated', key: key, valueOld: obj1[key], valueNew: obj2[key] }
 
       }
-      return { stat: 'unchanged', [key]: obj2[key] }
+      return { stat: 'unchanged', key: key, value: obj2[key] }
       });
   
     return arr;
