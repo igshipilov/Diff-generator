@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import parse from '../parsers.js';
 import { buildTree } from '../buildTree.js';
-import getStylish from './stylish.js';
-import getPlain from './plain.js';
+import { getStylish } from './stylish.js';
+import { getPlain } from './plain.js';
 
 const getFileType = (filepath) => path.extname(filepath).replaceAll('.', '') || 'json';
 const buildFullPath = (filepath) => path.resolve(process.cwd(), filepath);

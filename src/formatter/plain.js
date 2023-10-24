@@ -130,41 +130,83 @@ import { buildTree } from '../buildTree.js';
 
 
 
+// value должно быть:
+  // -- '[complex value]' если оно объект {}
+  // -- в кавычках, если оно строка
+  // -- без кавычек в остальных случаях
 
 
-export default (data) => {
-  const iter = (val, propPath) => {
-    const result = val.flatMap((node) => {
+// const correctValue = (value) => {
+//   if (Array.isArray(value)) {
+//     if ( _.isPlainObject(value[0])) {
+//       return '[complex value]'
+//     }
+//     return value.map((node) => correctValue(node));
+//   } 
+//   return (typeof value === 'string' ? `'${value}'` : value);
+//   // return value;
+// };
+
+
+// const correctValue = (value) => {
+//   if (Array.isArray(value)) {
+//     return value.map((node) => {
+//       if ( _.isPlainObject(node)) {
+//         return '[complex value]'
+//       }
+//       return value.map((node) => correctValue(node));
+//       // return value;
+//     })
+
+//   } 
+//   return (typeof value === 'string' ? `'${value}'` : value);
+//   // return value;
+// };
+
+
+
+const correctValue = (value) => {
+  // // ------ Никогда не срабатывает --------
+  // if (_.isPlainObject(value)) {
+  //   return '[complex value]';
+  // }
+  // // --------------------------------------
+
+  if (Array.isArray(value)) {
+    const result = value.map((node) => _.isPlainObject(node) ? '[complex value]' :  correctValue(node));
+    // const fin = result.includes('[complex value]') ? '[complex value]' : result;
+    
+    return result;
+
+    // // ------ Не работает --------
+    // if (_.isPlainObject(value[0])) {
+    //   return '[complex value]';
+    // } return correctValue(value[0]);
+    // // ---------------------------
+  } 
+  const correctedValue = typeof value === 'string' ? `'${value}'` : value;
+  
+  return correctedValue;
+};
+
+
+export const getPlain = (data) => {
+  const iter = (arr, propPath) => {
+    const result = arr.flatMap((node) => {
       const pairs = Object.entries(node); // [['stat', 'nested'], ['common', '[Array]']]
-      const [statNameVal, keyValue] = pairs;
-      const [statName, stat] = statNameVal;
-      const [key, value] = keyValue;
+      const [[statName, stat], [key, value]] = pairs;
 
       const propertyPath = path.join(propPath, key);
       const formattedPath = propertyPath.replaceAll('/', '.')
-
-      const isValueObject = _.isPlainObject(value);
-      const curentValue = isValueObject ? '[complex value]' : value;
+      const curentValue = correctValue(value);
 
       switch (stat) {
-        // case 'nested': return iter(value, propertyPath);
-        // case 'removed': return [propertyPath, stat];
-        // case 'added': return [propertyPath, stat, curentValue];
-        // case 'updated': return [propertyPath, stat, curentValue];
-
         case 'nested': return iter(value, formattedPath);
         case 'removed': return `Property '${formattedPath}' was ${stat}`;
-        case 'added': return `Property '${formattedPath}' was ${stat} with value: '${curentValue}'`;
-        case 'updated': return `Property '${formattedPath}' was ${stat}. From '${curentValue[0]}' to '${curentValue[1]}'`;
+        case 'added': return `Property '${formattedPath}' was ${stat} with value: ${curentValue}`;
+        case 'updated': return `Property '${formattedPath}' was ${stat}. From ${curentValue[0]} to ${curentValue[1]}`;
         default: return '';
       }
-      
-      // if (stat !== 'nested') {
-      //   // всегда false, потому что объекты лежат внутри массива
-      //   const isValueObject = _.isPlainObject(value); 
-
-      //   return (isValueObject ? '[complex value]' : value); // не работает, почему?
-      // }
     });
 
     return result.filter((node) => node !== '');
