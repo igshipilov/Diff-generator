@@ -1,6 +1,6 @@
 {
   "name": "@hexlet/code",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Hexlet, second Project: Difference Generator",
   "main": "src/formatter/index.js",
   "type": "module",

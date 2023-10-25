@@ -19,7 +19,7 @@ const formatDiff = (diff, formatName) => {
   }
 };
 
-export const genDiff = (pathFile1, pathFile2, formatName = 'stylish') => {
+export default (pathFile1, pathFile2, formatName = 'stylish') => {
   const dataFile1 = getData(buildFullPath(pathFile1));
   const dataFile2 = getData(buildFullPath(pathFile2));
   const diff = buildTree(dataFile1, dataFile2);
@@ -31,4 +31,4 @@ export const genDiff = (pathFile1, pathFile2, formatName = 'stylish') => {
 // console.log(process.cwd());
 // console.log(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json'));
 
-export { getData };
+// export { getData };
