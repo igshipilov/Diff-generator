@@ -44,7 +44,7 @@ export const getPlain = (data) => {
 
           return `Property '${formattedPath}' was ${stat}. From ${valueOldFormatted} to ${valueNewFormatted}`;
         }
-        default: return '';
+        default: throw new Error(`Unknown status ${stat}`);
       }
     });
 

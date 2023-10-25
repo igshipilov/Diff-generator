@@ -1,6 +1,6 @@
 {
-  "name": "frontend-project-46",
-  "version": "1.0.0",
+  "name": "@hexlet/code",
+  "version": "1.0.1",
   "description": "Hexlet, second Project: Difference Generator",
   "main": "index.js",
   "type": "module",

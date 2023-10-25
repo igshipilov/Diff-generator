@@ -5,7 +5,7 @@ import { genDiff } from '../src/formatter/index.js';
 
 program
   .name('gendiff')
-  .version('1.0.0')
+  .version('1.0.1')
   .description('Compares two configuration files and shows a difference.')
   .option('-f, --format <type>', 'output format', 'stylish')
   .arguments('<filepath1> <filepath2>')
