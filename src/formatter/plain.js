@@ -32,6 +32,7 @@ export const getPlain = (data) => {
       const curentValue = correctValue(value);
 
       switch (stat) {
+        case 'unchanged': return '';
         case 'nested': return iter(value, formattedPath);
         case 'removed': return `Property '${formattedPath}' was ${stat}`;
         case 'added': return `Property '${formattedPath}' was ${stat} with value: ${curentValue}`;
