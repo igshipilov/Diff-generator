@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.1",
   "description": "Hexlet, second Project: Difference Generator",
-  "main": "index.js",
+  "main": "src/formatter/index.js",
   "type": "module",
   "scripts": {
     "test": "npx jest"
