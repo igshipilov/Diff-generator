@@ -1,10 +1,11 @@
 // index.js (ИЛИ indexFormatter.js ?)
 import fs from 'fs';
 import path from 'path';
-import parse from '../parsers.js';
+import { parse } from '../parsers.js';
 import { buildTree } from '../buildTree.js';
 import { getStylish } from './stylish.js';
 import { getPlain } from './plain.js';
+import { getJSON } from './json.js';
 
 const getFileType = (filepath) => path.extname(filepath).replaceAll('.', '') || 'json';
 const buildFullPath = (filepath) => path.resolve(process.cwd(), filepath);
@@ -13,6 +14,7 @@ const getData = (filepath) => parse(getFileType(filepath), fs.readFileSync(filep
 const formatDiff = (diff, formatName) => {
   switch (formatName) {
     case 'plain': return getPlain(diff);
+    case 'json': return getJSON(diff);
     default: return getStylish(diff);
   }
 };

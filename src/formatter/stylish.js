@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 export const getStylish = (data) => {
   const iter = (node, depth) => {
-
     if (!_.isPlainObject(node) && !Array.isArray(node)) {
       return node;
     }
@@ -23,44 +22,37 @@ export const getStylish = (data) => {
       }
     };
 
-      const arr = node.flatMap((obj) => {
-        // const [currentStat, key] = Object.keys(obj);
-        // const value = obj[key];
-        // const stat = obj[currentStat];
+    const arr = node.flatMap((obj) => {
+      const { key } = obj;
+      const { value } = obj;
+      const { stat } = obj;
 
-        const key = obj.key;
-        const value = obj.value;
-        const stat = obj.stat;
-
-        switch (stat) {
-          case 'updated':
-          // const [value1, value2] = value;
-
-          const valueOld = obj.valueOld;
-          const valueNew = obj.valueNew;
-          
+      switch (stat) {
+        case 'updated': {
+          const { valueOld } = obj;
+          const { valueNew } = obj;
           const [deleted, added] = statSign(stat);
 
           const processValue = (val) => {
             if (_.isPlainObject(val)) {
               const entries = Object.entries(val);
-              const result = entries.map(([key, value]) => `${currentIndent}${currentIndent}${key}: ${iter(processValue(value), depth + 1)}`);
-            
+              const result = entries.map(([objectKey, objectValue]) => `${currentIndent}${currentIndent}${objectKey}: ${iter(processValue(objectValue), depth + 1)}`);
+
               return ['{', ...result, `${bracketIndent}${bracketIndent}}`].join('\n');
             }
 
             return val;
           };
-          
-            return `${currentIndent}${deleted}${key}: ${processValue(valueOld)}${br}${currentIndent}${added}${key}: ${processValue(valueNew)}`;
 
-          default: return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`;
+          return `${currentIndent}${deleted}${key}: ${processValue(valueOld)}${br}${currentIndent}${added}${key}: ${processValue(valueNew)}`;
         }
-      });
+        default: return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`;
+      }
+    });
 
-      return ['{', ...arr, `${bracketIndent}}`]
-        .join('\n');
-    };
+    return ['{', ...arr, `${bracketIndent}}`]
+      .join('\n');
+  };
 
   return iter(data, 1);
 };
