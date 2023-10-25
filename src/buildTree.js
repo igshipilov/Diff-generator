@@ -5,7 +5,7 @@ export default (file1, file2) => {
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);
 
-    const keys = _.union(keys1, keys2).sort(); // Массив со списком всех ключей из обоих объектов
+    const keys = _.sortBy(_.union(keys1, keys2)); // Массив со списком всех ключей из обоих объектов
 
     const arr = keys.map((key) => {
       const isKey1Object = _.isPlainObject(obj1[key]);
