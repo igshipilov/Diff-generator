@@ -1,8 +1,8 @@
-[
+{
   {
     "stat": "nested",
     "key": "common",
-    "value": [
+    "value": {
       {
         "stat": "added",
         "key": "follow",
@@ -32,29 +32,29 @@
       {
         "stat": "added",
         "key": "setting5",
-        "value": [
+        "value": {
           {
             "stat": "unchanged",
             "key": "key5",
             "value": "value5"
           }
-        ]
+        }
       },
       {
         "stat": "nested",
         "key": "setting6",
-        "value": [
+        "value": {
           {
             "stat": "nested",
             "key": "doge",
-            "value": [
+            "value": {
               {
                 "stat": "updated",
                 "key": "wow",
                 "valueOld": "",
                 "valueNew": "so much"
               }
-            ]
+            }
           },
           {
             "stat": "unchanged",
@@ -66,14 +66,14 @@
             "key": "ops",
             "value": "vops"
           }
-        ]
+        }
       }
-    ]
+    }
   },
   {
     "stat": "nested",
     "key": "group1",
-    "value": [
+    "value": {
       {
         "stat": "updated",
         "key": "baz",
@@ -93,12 +93,12 @@
         },
         "valueNew": "str"
       }
-    ]
+    }
   },
   {
     "stat": "removed",
     "key": "group2",
-    "value": [
+    "value": {
       {
         "stat": "unchanged",
         "key": "abc",
@@ -107,42 +107,42 @@
       {
         "stat": "nested",
         "key": "deep",
-        "value": [
+        "value": {
           {
             "stat": "unchanged",
             "key": "id",
             "value": 45
           }
-        ]
+        }
       }
-    ]
+    }
   },
   {
     "stat": "added",
     "key": "group3",
-    "value": [
+    "value": {
       {
         "stat": "nested",
         "key": "deep",
-        "value": [
+        "value": {
           {
             "stat": "nested",
             "key": "id",
-            "value": [
+            "value": {
               {
                 "stat": "unchanged",
                 "key": "number",
                 "value": 45
               }
-            ]
+            }
           }
-        ]
+        }
       },
       {
         "stat": "unchanged",
         "key": "fee",
         "value": 100500
       }
-    ]
+    }
   }
-]
+}
