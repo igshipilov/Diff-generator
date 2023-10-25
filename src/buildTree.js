@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const buildTree = (file1, file2) => {
+export default (file1, file2) => {
   const iter = (obj1, obj2) => {
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);

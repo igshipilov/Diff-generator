@@ -20,7 +20,7 @@ const correctValue = (value) => {
   return correctedValue;
 };
 
-export const getPlain = (data) => {
+export default (data) => {
   const iter = (arr, propPath) => {
     const result = arr.flatMap((node) => {
       const { key } = node;

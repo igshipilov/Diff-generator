@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const getStylish = (data) => {
+export default (data) => {
   const iter = (node, depth) => {
     if (!_.isPlainObject(node) && !Array.isArray(node)) {
       return node;
