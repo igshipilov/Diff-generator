@@ -1,35 +1,20 @@
 import _ from 'lodash';
 import path from 'path';
 
-// ======= для тестов ===========
-// import { getData } from './index.js';
-// import { buildTree } from '../buildTree.js';
-// ==============================
-
-const correctValue = (value) => {
+const stringify = (value) => {
   if (_.isObject(value)) {
-    return '[complex value]';
-  }
-
-  if (Array.isArray(value)) {
-    const result = value.map((node) => (_.isPlainObject(node) ? '[complex value]' : correctValue(node)));
-    return result;
-  }
-  const correctedValue = typeof value === 'string' ? `'${value}'` : value;
-
-  return correctedValue;
+    return '[complex value]'; 
+  } return typeof value === 'string' ? `'${value}'` : String(value);
 };
 
 export default (data) => {
   const iter = (arr, propPath) => {
     const result = arr.flatMap((node) => {
-      const { key } = node;
-      const { value } = node;
-      const { stat } = node;
+      const { key, value, stat } = node;
 
       const propertyPath = path.join(propPath, key);
       const formattedPath = propertyPath.replaceAll('/', '.');
-      const curentValue = correctValue(value);
+      const curentValue = stringify(value);
 
       switch (stat) {
         case 'unchanged': return '';
@@ -40,8 +25,8 @@ export default (data) => {
           const { valueOld } = node;
           const { valueNew } = node;
 
-          const valueOldFormatted = correctValue(valueOld);
-          const valueNewFormatted = correctValue(valueNew);
+          const valueOldFormatted = stringify(valueOld);
+          const valueNewFormatted = stringify(valueNew);
 
           return `Property '${formattedPath}' was ${stat}. From ${valueOldFormatted} to ${valueNewFormatted}`;
         }
@@ -55,12 +40,3 @@ export default (data) => {
   return iter(data, '')
     .join('\n');
 };
-
-// ===== TESTS ========
-// const tree = buildTree(getData('__fixtures__/file1.json'), getData('__fixtures__/file2.json'));
-// console.log(getPlain(tree));
-
-// console.log(JSON.stringify(tree, null, 2));
-// console.log(getPlainData(tree));
-// console.log(getFinalValue(tree));
-// ====================

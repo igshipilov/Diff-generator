@@ -5,7 +5,7 @@ export default (file1, file2) => {
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);
 
-    const keys = _.sortBy(_.union(keys1, keys2)); // Массив со списком всех ключей из обоих объектов
+    const keys = _.sortBy(_.union(keys1, keys2)); // Array of keys from both objects
 
     const arr = keys.map((key) => {
       const isKey1Object = _.isPlainObject(obj1[key]);
@@ -34,10 +34,3 @@ export default (file1, file2) => {
 
   return resultData;
 };
-
-// ===== TESTS ========
-// import { getData } from './formatter/index.js';
-
-// const test = buildTree(getData('__fixtures__/file1.json'), getData('__fixtures__/file2.json'));
-// console.log(JSON.stringify(test, null, 2));
-// ====================

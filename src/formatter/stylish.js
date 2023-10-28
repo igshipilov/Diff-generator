@@ -1,8 +1,18 @@
 import _ from 'lodash';
 
+const statSign = (stat) => {
+  switch (stat) {
+    case 'removed': return '- ';
+    case 'added': return '+ ';
+    case 'updated': return ['- ', '+ '];
+    default: return '  ';
+  }
+};
+
 export default (data) => {
   const iter = (node, depth) => {
-    if (!_.isPlainObject(node) && !Array.isArray(node)) {
+
+    if (!_.isObject(node)) {
       return node;
     }
 
@@ -13,30 +23,18 @@ export default (data) => {
     const bracketIndent = spacer.repeat(indentCount - (spacerCount / 2));
     const br = '\n';
 
-    const statSign = (stat) => {
-      switch (stat) {
-        case 'removed': return '- ';
-        case 'added': return '+ ';
-        case 'updated': return ['- ', '+ '];
-        default: return '  ';
-      }
-    };
-
     const arr = node.flatMap((obj) => {
-      const { key } = obj;
-      const { value } = obj;
-      const { stat } = obj;
+      const { key, value, stat } = obj;
 
       switch (stat) {
         case 'updated': {
-          const { valueOld } = obj;
-          const { valueNew } = obj;
+          const { valueOld, valueNew } = obj;
           const [deleted, added] = statSign(stat);
 
-          const processValue = (val) => {
+          const stringify = (val) => {
             if (_.isPlainObject(val)) {
               const entries = Object.entries(val);
-              const result = entries.map(([objectKey, objectValue]) => `${currentIndent}${currentIndent}${objectKey}: ${iter(processValue(objectValue), depth + 1)}`);
+              const result = entries.map(([objectKey, objectValue]) => `${currentIndent}${currentIndent}${objectKey}: ${iter(stringify(objectValue), depth + 1)}`);
 
               return ['{', ...result, `${bracketIndent}${bracketIndent}}`].join('\n');
             }
@@ -44,7 +42,7 @@ export default (data) => {
             return val;
           };
 
-          return `${currentIndent}${deleted}${key}: ${processValue(valueOld)}${br}${currentIndent}${added}${key}: ${processValue(valueNew)}`;
+          return `${currentIndent}${deleted}${key}: ${stringify(valueOld)}${br}${currentIndent}${added}${key}: ${stringify(valueNew)}`;
         }
         default: return `${currentIndent}${statSign(stat)}${key}: ${iter(value, depth + 1)}`;
       }
