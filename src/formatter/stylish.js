@@ -11,7 +11,6 @@ const statSign = (stat) => {
 
 export default (data) => {
   const iter = (node, depth) => {
-
     if (!_.isObject(node)) {
       return node;
     }

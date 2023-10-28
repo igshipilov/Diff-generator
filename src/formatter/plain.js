@@ -3,7 +3,7 @@ import path from 'path';
 
 const stringify = (value) => {
   if (_.isObject(value)) {
-    return '[complex value]'; 
+    return '[complex value]';
   } return typeof value === 'string' ? `'${value}'` : String(value);
 };
 
