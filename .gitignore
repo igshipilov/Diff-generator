@@ -1,3 +1,5 @@
 node_modules
-my-tests
-sandbox
+my-tests/
+sandbox/
+.vscode/
+coverage/
