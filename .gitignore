@@ -1,5 +1,4 @@
 node_modules
 my-tests/
 sandbox/
-.vscode/
-coverage/
+
