@@ -22,8 +22,9 @@ export default (data) => {
     const bracketIndent = spacer.repeat(indentCount - (spacerCount / 2));
     const br = '\n';
 
-    const arr = node.flatMap(({ key, value, stat, valueOld, valueNew }) => {
-
+    const arr = node.flatMap(({
+      key, value, stat, valueOld, valueNew,
+    }) => {
       switch (stat) {
         case 'updated': {
           const [deleted, added] = statSign(stat);
