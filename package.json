@@ -1,6 +1,6 @@
 {
   "name": "@hexlet/code",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Hexlet, second Project: Difference Generator",
   "main": "src/index.js",
   "type": "module",
@@ -21,7 +21,8 @@
     "commander": "^11.0.0",
     "eslint-config-airbnb": "^19.0.4",
     "js-yaml": "^4.1.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "tree-node-cli": "^1.6.0"
   },
   "devDependencies": {
     "eslint": "^8.51.0",
